@@ -1,3 +1,5 @@
+pub mod hello;
+
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};

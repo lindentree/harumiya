@@ -1,6 +1,9 @@
 use std::env;
 
 use gcp_auth::AuthenticationManager;
+use harumiya::{Content, GenerateContentRequest, GenerateContentResponse, GenerationConfig, Part};
+
+static MODEL_NAME: &str = "gemini-pro-vision";
 
 pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>> {
     let api_endpoint = env::var("API_ENDPOINT")?;
@@ -8,14 +11,18 @@ pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>>
     let location_id = env::var("LOCATION_ID")?; // Sometimes called "region" in gCloud docs.
 
     let endpoint_url = format!(
-        "https://{api_endpoint}/v1beta1/projects/{project_id}/locations/{location_id}/publishers/google/models/{MODEL_NAME}:generateContent"
+        "https://{api_endpoint}/v1/projects/{project_id}/locations/{location_id}/publishers/google/models/{MODEL_NAME}:generateContent"
     );
+
+    println!("endpoint: {}", endpoint_url.as_str());
 
     let authentication_manager = AuthenticationManager::new().await?;
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
     let token = authentication_manager.get_token(scopes).await?;
 
-    let prompt = "Why is the sky blue?";
+    println!("Token: {}", token.as_str());
+
+    let prompt = "Create a setting for a scifi novel";
 
     let payload = GenerateContentRequest {
         contents: vec![Content {
