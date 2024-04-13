@@ -1,11 +1,15 @@
 use std::env;
 
+use dotenv::dotenv;
+
 use gcp_auth::AuthenticationManager;
 use harumiya::{Content, GenerateContentRequest, GenerateContentResponse, GenerationConfig, Part};
 
 static MODEL_NAME: &str = "gemini-pro-vision";
 
 pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>> {
+    dotenv().ok();
+
     let api_endpoint = env::var("API_ENDPOINT")?;
     let project_id = env::var("PROJECT_ID")?;
     let location_id = env::var("LOCATION_ID")?; // Sometimes called "region" in gCloud docs.
@@ -14,15 +18,17 @@ pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>>
         "https://{api_endpoint}/v1/projects/{project_id}/locations/{location_id}/publishers/google/models/{MODEL_NAME}:generateContent"
     );
 
-    println!("endpoint: {}", endpoint_url.as_str());
+    println!("RUNNING");
 
     let authentication_manager = AuthenticationManager::new().await?;
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
     let token = authentication_manager.get_token(scopes).await?;
 
-    println!("Token: {}", token.as_str());
+    let user_input = "Mars and mechas";
 
-    let prompt = "Create a setting for a scifi novel";
+    let prompt = format!(
+        "Create a setting for a fantasy novel with {user_input}. Format it as a JSON object."
+    );
 
     let payload = GenerateContentRequest {
         contents: vec![Content {
