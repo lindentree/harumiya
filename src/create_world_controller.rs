@@ -7,7 +7,7 @@ use harumiya::{Content, GenerateContentRequest, GenerateContentResponse, Generat
 
 static MODEL_NAME: &str = "gemini-pro-vision";
 
-pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn create_world_simple(user_premise: String) -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_endpoint = env::var("API_ENDPOINT")?;
@@ -24,10 +24,8 @@ pub async fn create_world_controller() -> Result<(), Box<dyn std::error::Error>>
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
     let token = authentication_manager.get_token(scopes).await?;
 
-    let user_input = "Mars and mechas";
-
     let prompt = format!(
-        "Create a setting for a fantasy novel with {user_input}. Format it as a JSON object."
+        "Create a setting for a fantasy novel with {user_premise}. Format it as a JSON object."
     );
 
     let payload = GenerateContentRequest {
