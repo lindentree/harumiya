@@ -1,9 +1,8 @@
 mod create_world_controller;
 
 use axum::{
-    body::Body,
     http::StatusCode,
-    response::{IntoResponse, Response},
+    response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
@@ -30,7 +29,7 @@ async fn create_world_simple_handler(payload: Json<Map<String, Value>>) -> impl 
     let result = create_world_simple(payload.0.get("premise").unwrap().to_string()).await;
     print!("{:?}", result);
     match result {
-        Ok(_) => StatusCode::OK,
+        Ok(_result) => StatusCode::OK,
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }

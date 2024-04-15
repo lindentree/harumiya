@@ -25,7 +25,11 @@ pub async fn create_world_simple(user_premise: String) -> Result<(), Box<dyn std
     let token = authentication_manager.get_token(scopes).await?;
 
     let prompt = format!(
-        "Create a setting for a fantasy novel with {user_premise}. Format it as a JSON object."
+        "System: You are a worldbuilding assistant. Create a setting for a novel with the user's premise. Focus more on
+        the world's details and less on the plot.
+        Format it as a JSON object.
+
+        User: {user_premise}"
     );
 
     let payload = GenerateContentRequest {
