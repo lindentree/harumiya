@@ -6,3 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = "0.7.5"
+dotenv = "0.15.0"
+gcp_auth = "0.11.0"
+reqwest = { version = "0.12.3", features = ["json"] }
+serde = "1.0.197"
+serde_json = "1.0.115"
+tokio = { version = "1.37.0", features = ["full"] }
+toml = "0.8.12"
