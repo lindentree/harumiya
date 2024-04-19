@@ -6,7 +6,6 @@ const action: ActionFunction = async ({ request }) => {
   console.log("FIRING ACTION");
   const formData = await request.formData();
 
-  console.log("FIRING LOADER");
   const res = await fetch("http://localhost:8000/create/sse", {
     method: "POST",
     headers: {
@@ -16,9 +15,12 @@ const action: ActionFunction = async ({ request }) => {
   });
   console.log("RES", res);
   const text = await res.text();
-  console.log("TEXT", text[0]);
+  console.log("ALL", text);
+  const data = JSON.parse(text);
+  console.log("JSON", data);
+  console.log("FIRST", text[0]);
 
-  return redirect(`/world/${text[0]}`);
+  return redirect(`/world/${data.id}`);
 
 }
 
