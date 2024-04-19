@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, redirect, useActionData } from "@remix-run/react";
 import type { ActionFunctionArgs } from "@remix-run/node";
-import WorldOverview from "./world";
+import { commitSession, getSession } from "../sessions";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,21 +10,26 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// export const action = async ({
-//   request
-// }: ActionFunctionArgs) => {
-//   console.log("FIRING ACTION");
+export const action = async ({
+  request
+}: ActionFunctionArgs) => {
+  // console.log("FIRING initial");
 
-//   const res = await fetch("http://localhost:8000/create", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ premise: request.formData() }),
-//   });
+  // const session = await getSession(
+  //   request.headers.get("Cookie")
+  // );
+  // const formData = await request.formData();
+  // const premise = formData.get("premise");
 
-//   return res.json();
-// }
+  // session.flash(
+  //   "error",
+  //   `${premise}`
+  // );
+
+
+  return redirect("/world")
+
+}
 
 
 export default function Index() {
@@ -38,7 +43,6 @@ export default function Index() {
           <button type="submit">Submit</button>
         </Form>
       </div>
-      <WorldOverview />
     </div>
   );
 }
