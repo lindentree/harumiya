@@ -1,35 +1,49 @@
 import { redirect, useLoaderData, useActionData, useParams } from "@remix-run/react";
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
-import { getSession, commitSession } from "../sessions";
+import axios from 'axios';
 
 const action: ActionFunction = async ({ request }) => {
   console.log("FIRING ACTION");
   const formData = await request.formData();
 
-  const res = await fetch("http://localhost:8000/create/sse", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ premise: formData.get("premise") }),
-  });
-  console.log("RES", res);
-  const text = await res.text();
-  console.log("ALL", text);
-  const data = JSON.parse(text);
-  console.log("JSON", data);
-  console.log("FIRST", text[0]);
+  // const res = await axios.post(
+  //   "http://localhost:8000/create",
+  //   { premise: formData.get("premise") },
+  //   {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     }
+  //   }
+  // ).then
+  //   (res => {
+  //     const data = res.data
+  //     console.log("RES", data);
+  //     return redirect(`/world/${data.name}`);
 
-  return redirect(`/world/${data.id}`);
+  //   });
+
+  const res = await fetch('http://localhost:8000/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ premise: formData.get('premise') }),
+    keepalive: true
+  });
+
+  const external = await res.json();
+  console.log("EXTERNAL", external);
+
 
 }
 
 const loader: LoaderFunction = async ({ params }) => {
+  console.log("params", params);
   return params;
 }
 
-export { action };
-export { loader };
+export { action, loader };
+
 
 export default function WorldOverview() {
   const worldData = useLoaderData();
