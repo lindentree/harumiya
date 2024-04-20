@@ -1,5 +1,6 @@
 use std::env;
 
+use axum::Json;
 use dotenv::dotenv;
 
 use gcp_auth::AuthenticationManager;
@@ -7,7 +8,9 @@ use harumiya::{Content, GenerateContentRequest, GenerateContentResponse, Generat
 
 static MODEL_NAME: &str = "gemini-pro-vision";
 
-pub async fn create_world_simple(user_premise: String) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn create_world_simple(
+    user_premise: String,
+) -> Result<String, Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_endpoint = env::var("API_ENDPOINT")?;
@@ -54,14 +57,30 @@ pub async fn create_world_simple(user_premise: String) -> Result<(), Box<dyn std
         .send()
         .await?;
 
+    let mut assembled = String::new();
+
     let response = resp.json::<GenerateContentResponse>().await?;
     response.candidates.iter().for_each(|candidate| {
         candidate.content.parts.iter().for_each(|part| {
             if let Part::Text(text) = part {
                 print!("{}", text);
+                assembled.push_str(text);
             }
         });
     });
 
-    Ok(())
+    println!("CONTROLLER {:?}", &assembled);
+
+    Ok(assembled)
+}
+
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_create_world_simple() {
+        let result =
+            create_world_simple("I want to create a world with dragons.".to_string()).await;
+        assert!(result.is_ok());
+    }
 }
