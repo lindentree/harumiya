@@ -1,26 +1,10 @@
-import { redirect, useLoaderData, useActionData, useParams } from "@remix-run/react";
+import { redirect, useLoaderData, useActionData, useParams, json } from "@remix-run/react";
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
-import axios from 'axios';
+import { ReactNode } from "react";
 
 const action: ActionFunction = async ({ request }) => {
   console.log("FIRING ACTION");
   const formData = await request.formData();
-
-  // const res = await axios.post(
-  //   "http://localhost:8000/create",
-  //   { premise: formData.get("premise") },
-  //   {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     }
-  //   }
-  // ).then
-  //   (res => {
-  //     const data = res.data
-  //     console.log("RES", data);
-  //     return redirect(`/world/${data.name}`);
-
-  //   });
 
   const res = await fetch('http://localhost:8000/create', {
     method: 'POST',
@@ -31,10 +15,12 @@ const action: ActionFunction = async ({ request }) => {
     keepalive: true
   });
 
-  const external = await res.text();
-  console.log("EXTERNAL", external);
-  return external;
+  //const external = await res.text();
+  const json = await res.text();
 
+  //const valid = JSON.stringify(json);
+  console.log("EXTERNAL", json);
+  return JSON.parse(json);
 
 }
 
@@ -47,20 +33,27 @@ export { action, loader };
 
 
 export default function WorldOverview() {
-  const worldData = useActionData();
-  //const jsonified = JSON.parse(worldData);
+  const worldData = useActionData() as JSON;
+  //const actualWorldData = JSON.parse(worldData as string);
   console.log("TESTING", worldData);
+  console.log("WORLD", Object.keys(worldData));
+  //const actualWorldData = JSON.parse(JSON.stringify(worldData, null, 2));
+  //console.log("ACTUAL", JSON.parse(actualWorldData));
   return (
     <div>
-
-
       <h1>World Overview</h1>
       <div>
         <h2>World Data</h2>
-        <pre>{JSON.stringify(worldData, null, 2)}</pre>
+        <pre>
+          {Object.entries((worldData as unknown as { world: Record<string, ReactNode> })["world"]).flatMap(([key, value]) => (
+            <div key={key}>
+              <span>{key}: </span>
+              <span>{value as ReactNode}</span>
+            </div>
+          ))}
+        </pre>
       </div>
     </div>
-
   );
 
 }

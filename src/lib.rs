@@ -40,6 +40,7 @@ pub struct GenerationConfig {
     pub top_k: Option<i32>,
     pub stop_sequences: Option<Vec<String>>,
     pub candidate_count: Option<u32>,
+    //pub response_mime_type: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
