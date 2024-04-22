@@ -45,10 +45,10 @@ export default function WorldOverview() {
       <div>
         <h2>World Data</h2>
         <pre>
-          {Object.entries((worldData as unknown as { world: Record<string, ReactNode> })["world"]).flatMap(([key, value]) => (
+          {Object.entries(worldData).map(([key, value]) => (
             <div key={key}>
               <span>{key}: </span>
-              <span>{value as ReactNode}</span>
+              <span>{value}</span>
             </div>
           ))}
         </pre>
