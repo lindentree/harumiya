@@ -31,8 +31,9 @@ const action: ActionFunction = async ({ request }) => {
     keepalive: true
   });
 
-  const external = await res.json();
+  const external = await res.text();
   console.log("EXTERNAL", external);
+  return external;
 
 
 }
@@ -46,8 +47,9 @@ export { action, loader };
 
 
 export default function WorldOverview() {
-  const worldData = useLoaderData();
-  console.log(worldData);
+  const worldData = useActionData();
+  //const jsonified = JSON.parse(worldData);
+  console.log("TESTING", worldData);
   return (
     <div>
 

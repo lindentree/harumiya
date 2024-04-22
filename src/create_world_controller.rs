@@ -10,7 +10,7 @@ static MODEL_NAME: &str = "gemini-pro-vision";
 
 pub async fn create_world_simple(
     user_premise: String,
-) -> Result<String, Box<dyn std::error::Error>> {
+) -> Result<Json<String>, Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_endpoint = env::var("API_ENDPOINT")?;
@@ -64,14 +64,14 @@ pub async fn create_world_simple(
         candidate.content.parts.iter().for_each(|part| {
             if let Part::Text(text) = part {
                 print!("{}", text);
-                assembled.push_str(text);
+                assembled += text;
             }
         });
     });
 
-    println!("CONTROLLER {:?}", &assembled);
+    println!("CONTROLLER {:?}", Json(&assembled));
 
-    Ok(assembled)
+    Ok(Json(assembled))
 }
 
 mod tests {

@@ -47,7 +47,7 @@ async fn create_world_simple_handler(payload: Json<Map<String, Value>>) -> impl 
     match result {
         Ok(_result) => Response::builder()
             .status(StatusCode::CREATED)
-            .body(Body::from(_result))
+            .body(Body::from(_result.to_string()))
             .unwrap(),
         Err(_) => Response::builder()
             .status(StatusCode::INTERNAL_SERVER_ERROR)
