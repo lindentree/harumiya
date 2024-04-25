@@ -1,4 +1,5 @@
 mod create_world_controller;
+mod gemini_embedder;
 
 use async_stream::stream;
 use axum::body::Body;

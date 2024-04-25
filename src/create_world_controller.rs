@@ -52,6 +52,8 @@ pub async fn create_world_simple(
         tools: None,
     };
 
+    println!("PROMPT PAYLOAD{:?}", payload);
+
     let resp = reqwest::Client::new()
         .post(&endpoint_url)
         .bearer_auth(token.as_str())

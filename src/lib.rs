@@ -1,6 +1,7 @@
-use std::collections::HashMap;
+mod embedder;
 
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CountTokensRequest {
@@ -13,14 +14,20 @@ pub struct CountTokensResponse {
     pub total_tokens: i32,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GenerateContentRequest {
     pub contents: Vec<Content>,
     pub generation_config: Option<GenerationConfig>,
     pub tools: Option<Vec<Tools>>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PredictEmbeddingsRequest {
+    pub instances: Vec<EmbeddingContent>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Tools {
     pub function_declarations: Option<Vec<FunctionDeclaration>>,
 }
@@ -29,6 +36,11 @@ pub struct Tools {
 pub struct Content {
     pub role: String,
     pub parts: Vec<Part>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct EmbeddingContent {
+    pub content: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
@@ -41,6 +53,12 @@ pub struct GenerationConfig {
     pub stop_sequences: Option<Vec<String>>,
     pub candidate_count: Option<u32>,
     //pub response_mime_type: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct GenerationEmbedConfig {
+    pub model_name: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -61,11 +79,56 @@ pub enum Part {
     },
 }
 
+/// Define an enum to represent different types of parts in the content.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum EmbedPart {
+    /// Represents a text part in the content.
+    EmbedText { text: String },
+}
+
+/// Implement the `Part` enum for the `Serialize` trait
+impl EmbedPart {
+    /// Create a new `Part` with text content.
+    pub fn text(text: &str) -> Self {
+        EmbedPart::EmbedText {
+            text: text.to_string(),
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GenerateContentResponse {
     pub candidates: Vec<Candidate>,
     pub usage_metadata: Option<UsageMetadata>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PredictEmbeddingsResponse {
+    pub predictions: Vec<Embedding>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Statistics {
+    // pub token_count: i32,
+    pub truncated: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PredictEmbeddings {
+    pub statistics: Statistics,
+    pub values: Vec<f64>,
+}
+
+/// Structure representing embedding information.
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Embedding {
+    /// List of values for the embedding.
+    pub embeddings: PredictEmbeddings,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
