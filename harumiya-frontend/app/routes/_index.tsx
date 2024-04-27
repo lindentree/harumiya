@@ -51,7 +51,7 @@ export default function Index() {
       }}>Welcome to Harumiya!</h1>
       <div>
         <Form method="post" action="/world">
-          <input name="premise" type="text" />
+          <input name="premise" type="text" style={{ height: "40px", borderRadius: "10px", paddingLeft: "10px" }} placeholder="Enter premise" />
           <br />
           <button type="submit" style={{ fontSize: "1.2em" }}>Demo</button>
         </Form>

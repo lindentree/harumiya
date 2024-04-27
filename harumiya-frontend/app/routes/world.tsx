@@ -46,7 +46,6 @@ export default function WorldOverview() {
   //console.log("ACTUAL", JSON.parse(actualWorldData));
   return (
     <div>
-      <h1>World Overview</h1>
       <div>
         <pre>
           {Object.entries(worldData).map(([key, value]) => (

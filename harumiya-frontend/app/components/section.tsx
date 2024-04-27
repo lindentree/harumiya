@@ -13,17 +13,20 @@ const Section: React.FC<SectionProps> = ({ title, content }) => {
 
     if (title === 'name') {
         return (
-            <div className="section">
+            <div className="section" style={{ textAlign: 'center' }}>
                 <h1>{content.toUpperCase()}</h1>
             </div>
         );
     }
 
     return (
-        <div className="section">
+        <div className="section" style={{ textAlign: 'center' }}>
             <h1>{title.toUpperCase()}</h1>
-            <p>{content}</p>
-        </div>
+            <p style={{
+                wordBreak: 'break-word',
+                whiteSpace: 'normal',
+            }}>{content}</p>
+        </div >
     );
 };
 
