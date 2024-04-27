@@ -28,6 +28,12 @@ pub struct PredictEmbeddingsRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EmbeddingsRequest {
+    pub content: Content,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Tools {
     pub function_declarations: Option<Vec<FunctionDeclaration>>,
 }
@@ -108,6 +114,18 @@ pub struct GenerateContentResponse {
 #[serde(rename_all = "camelCase")]
 pub struct PredictEmbeddingsResponse {
     pub predictions: Vec<Embedding>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EmbeddingsResponse {
+    pub embedding: ContentEmbedding,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ContentEmbedding {
+    pub values: Vec<f64>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

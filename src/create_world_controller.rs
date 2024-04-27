@@ -29,9 +29,9 @@ pub async fn create_world_simple(
     let token = authentication_manager.get_token(scopes).await?;
 
     let prompt = format!(
-        r#"System: You are a worldbuilding assistant. Create a setting for a novel with the user's premise. Focus more on
-        the world's details and less on the plot.
-        Format it as a JSON with this schema {{ "name": "...", "setting": "...", "premise": "...", "wildlife: "...", etc  }}.
+        r#"System: You are a worldbuilding assistant. Create a setting with the user's premise. Do not add plot or characters or names to premise, just summarize. Focus more on
+        the world's details and less on the plot. 
+        Format it as a JSON with this schema {{ "name": "multiline string", "setting": "multiline string", "premise": "multiline string", "wildlife: "multiline string", etc  }}. Do not nest data
         User: {user_premise}"#
     );
     println!("PROMPT {:?}", prompt);

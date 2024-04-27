@@ -1,13 +1,8 @@
 mod create_world_controller;
 mod gemini_embedder;
 
-use async_stream::stream;
 use axum::body::Body;
-use axum::http::Error;
-use axum::response::sse::{self, Event};
-use axum::response::sse::{Event as SseEvent, KeepAlive, Sse};
 use axum::response::Response;
-use axum::BoxError;
 use axum::{
     http::StatusCode,
     response::IntoResponse,
@@ -15,8 +10,6 @@ use axum::{
     Json, Router,
 };
 use create_world_controller::create_world_simple;
-use futures::stream::Stream;
-use futures::stream::{self, StreamExt};
 use serde_json::Map;
 use serde_json::Value;
 use std::net::SocketAddr;
@@ -27,9 +20,8 @@ async fn main() {
     let router = Router::new()
         .route("/", get(hello_world))
         .route("/create", post(create_world_simple_handler));
-    // .route("/sse", post(create_world_sse));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     let tcp = TcpListener::bind(&addr).await.unwrap();
 
     axum::serve(tcp, router).await.unwrap();
@@ -52,28 +44,6 @@ async fn create_world_simple_handler(payload: Json<Map<String, Value>>) -> impl 
     }
 }
 
-// async fn create_world_sse(
-//     payload: Json<Map<String, Value>>,
-// ) -> sse::Sse<impl Stream<Item = Result<Event, BoxError>> + Send + 'static>{
-//     let premise: String = payload.0.get("premise").unwrap().to_string();
-//     print!("{:?}", premise);
-
-//     let stream = stream! {
-//         let result = create_world_simple(payload.0.get("premise").unwrap().to_string().to_owned()).await;
-//         print!("{:?}", result);
-//         match result {
-//             Ok(_result) => {
-//                 yield Ok(SseEvent::default().data("Success"));
-//             }
-//             Err(_) => {
-//                 yield Ok(SseEvent::default().data("Error"));
-//             }
-//         }
-//     };
-
-//     Sse::new(stream)
-// }
-
 pub async fn hello_world() -> &'static str {
-    "Hello, world!"
+    "Hello, world change!"
 }

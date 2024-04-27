@@ -2,6 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { Form, redirect, useActionData } from "@remix-run/react";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { commitSession, getSession } from "../sessions";
+import cover from "/Library-Fantasy-World.jpg";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,14 +36,26 @@ export const action = async ({
 export default function Index() {
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Harumiya!</h1>
+    <div style={{
+      fontFamily: "system-ui, sans-serif",
+      textAlign: "center",
+      color: "green",
+      lineHeight: "1.8",
+      backgroundImage: `url(${cover})`,
+      backgroundSize: "cover",
+      height: "100vh", // Set the height of the div to cover the entire page
+      width: "100vw", // Set the width of the div to cover the entire page
+    }}>
+      <h1 style={{
+        color: "green"
+      }}>Welcome to Harumiya!</h1>
       <div>
         <Form method="post" action="/world">
           <input name="premise" type="text" />
-          <button type="submit">Submit</button>
+          <br />
+          <button type="submit" style={{ fontSize: "1.2em" }}>Demo</button>
         </Form>
       </div>
-    </div>
+    </div >
   );
 }
