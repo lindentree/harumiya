@@ -1,6 +1,5 @@
-import { redirect, useLoaderData, useActionData, useParams, json } from "@remix-run/react";
+import { redirect, useLoaderData, useActionData, useParams, unstable_useViewTransitionState, json } from "@remix-run/react";
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
-import { ReactNode } from "react";
 import Section from "~/components/section";
 
 const action: ActionFunction = async ({ request }) => {
@@ -39,11 +38,9 @@ export default function WorldOverview() {
   if (!worldData) {
     return <div>Loading...</div>;
   }
-  //const actualWorldData = JSON.parse(worldData as string);
   console.log("TESTING", worldData);
   console.log("WORLD", Object.keys(worldData));
-  //const actualWorldData = JSON.parse(JSON.stringify(worldData, null, 2));
-  //console.log("ACTUAL", JSON.parse(actualWorldData));
+
   return (
     <div>
       <div>

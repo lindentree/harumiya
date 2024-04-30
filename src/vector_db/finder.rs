@@ -1,4 +1,4 @@
-use crate::contents::File;
+use crate::vector_db::contents::File;
 use qdrant_client::qdrant::{value::Kind, ScoredPoint};
 
 pub trait Finder {

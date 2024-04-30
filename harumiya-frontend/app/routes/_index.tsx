@@ -49,9 +49,13 @@ export default function Index() {
       <h1 style={{
         color: "green"
       }}>Welcome to Harumiya!</h1>
+      <p style={{
+        textAlign: "center",
+        color: "green",
+      }}> Harumiya is an idea generator for world building</p>
       <div>
         <Form method="post" action="/world">
-          <input name="premise" type="text" style={{ height: "40px", borderRadius: "10px", paddingLeft: "10px" }} placeholder="Enter premise" />
+          <input name="premise" type="text" style={{ height: "80px", borderRadius: "10px", paddingLeft: "10px" }} placeholder="Enter premise here" />
           <br />
           <button type="submit" style={{ fontSize: "1.2em" }}>Demo</button>
         </Form>

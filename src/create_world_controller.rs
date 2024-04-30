@@ -31,7 +31,8 @@ pub async fn create_world_simple(
     let prompt = format!(
         r#"System: You are a worldbuilding assistant. Create a setting based on the user's premise. Focus more on
         the world's details and less on the plot. 
-        Format it as a JSON with this schema {{ "name": "multiline string", "setting": "multiline string", "wildlife: "multiline string", "geography": "multiline string" etc  }}. Do not nest data
+        Format it as a JSON with this schema {{ "name": "multiline string", "setting": "multiline string", "wildlife: "multiline string", "geography": "multiline string", etc  }}. Do not nest data 
+        but flesh out each category with a few concrete examples. Also add more categories as appropriate.
         User: {user_premise}"#
     );
     println!("PROMPT {:?}", prompt);

@@ -14,7 +14,7 @@ static EMBEDDING_MODEL_NAME_2: &str = "embedding-001";
 
 pub async fn generate_sentence_embeddings(
     sentence: String,
-) -> Result<Vec<f64>, Box<dyn std::error::Error>> {
+) -> Result<Vec<f32>, Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_endpoint = env::var("API_ENDPOINT")?;

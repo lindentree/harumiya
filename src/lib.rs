@@ -125,7 +125,7 @@ pub struct EmbeddingsResponse {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ContentEmbedding {
-    pub values: Vec<f64>,
+    pub values: Vec<f32>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -139,7 +139,7 @@ pub struct Statistics {
 #[serde(rename_all = "camelCase")]
 pub struct PredictEmbeddings {
     pub statistics: Statistics,
-    pub values: Vec<f64>,
+    pub values: Vec<f32>,
 }
 
 /// Structure representing embedding information.
