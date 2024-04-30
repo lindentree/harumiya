@@ -4,4 +4,5 @@
 pub mod contents;
 pub mod errors;
 pub mod finder;
+pub mod gemini;
 pub mod vector;
