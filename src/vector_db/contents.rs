@@ -5,6 +5,7 @@ use std::{
 };
 
 use crate::vector_db::errors::NotAvailableError;
+use lopdf::Document;
 
 pub struct File {
     pub path: String,
@@ -34,48 +35,18 @@ impl File {
         let mut sentence = String::new();
 
         for line in self.contents.lines() {
-            match state {
-                FileState::None => {
-                    if line.starts_with("```") {
-                        state = FileState::CodeBlock;
-                        sentence = String::new();
-                        sentence.push_str(line);
-                        sentence.push('\n');
-                    } else if line.starts_with("---") {
-                        state = FileState::Comments;
-                    } else if !line.starts_with('#') && !line.is_empty() {
-                        state = FileState::Sentence;
-                        sentence = String::new();
-                        sentence.push_str(line);
-                        sentence.push('\n');
-                    }
-                }
-                FileState::CodeBlock => {
-                    sentence.push_str(line);
-                    if line.starts_with("```") {
-                        contents.push(sentence);
-                        sentence = String::new();
-                        state = FileState::None;
-                    }
-                }
-                FileState::Comments => {
-                    if line.starts_with("---") {
-                        state = FileState::None;
-                    }
-                }
-                FileState::Sentence => {
-                    if line.is_empty() {
-                        state = FileState::None;
-                        contents.push(sentence);
-                        sentence = String::new();
-                    } else {
-                        sentence.push_str(line);
-                        sentence.push('\n');
-                    }
-                }
+            //println!("LINE: {}", line);
+            if line.is_empty() {
+                state = FileState::None;
+                contents.push(sentence);
+                sentence = String::new();
+            } else {
+                sentence.push_str(line);
+                sentence.push('\n');
             }
         }
         self.sentences = contents;
+        //println!("Sentences inner: {:?}", self.sentences);
     }
 }
 
@@ -91,17 +62,46 @@ impl HasFileExt for Path {
         false
     }
 }
-pub fn load_files_from_dir(dir: PathBuf, ending: &str, prefix: &PathBuf) -> Result<Vec<File>> {
+
+pub fn load_txt_files_from_dir(dir: PathBuf, ending: &str, prefix: &PathBuf) -> Result<Vec<File>> {
     let mut files = Vec::new();
     for entry in fs::read_dir(dir)? {
         let path = entry?.path();
         if path.is_dir() {
             println!("Path Directory: {:?}", path);
-            let mut sub_files = load_files_from_dir(path, ending, prefix)?;
+            let mut sub_files = load_txt_files_from_dir(path, ending, prefix)?;
             files.append(&mut sub_files);
         } else if path.is_file() && path.has_file_extension(ending) {
             println!("Path: {:?}", path);
             let contents = fs::read_to_string(&path)?;
+            println!("Text: {}", contents);
+
+            let path = Path::new(&path).strip_prefix(prefix)?.to_owned();
+            let key = path.to_str().ok_or(NotAvailableError {})?;
+            let mut file = File::new(key.to_string(), contents);
+            file.parse();
+            files.push(file);
+        }
+    }
+    Ok(files)
+}
+
+pub fn load_pdf_files_from_dir(dir: PathBuf, ending: &str, prefix: &PathBuf) -> Result<Vec<File>> {
+    let mut files = Vec::new();
+    for entry in fs::read_dir(dir)? {
+        let path = entry?.path();
+        if path.is_dir() {
+            println!("Path Directory: {:?}", path);
+            let mut sub_files = load_txt_files_from_dir(path, ending, prefix)?;
+            files.append(&mut sub_files);
+        } else if path.is_file() && path.has_file_extension(ending) {
+            println!("Path: {:?}", path);
+            let doc = Document::load(&path);
+            let page_number: &[u32] = &[3];
+
+            println!("PDF contents{}", doc.unwrap().extract_text(page_number)?);
+            let contents = fs::read_to_string(&path)?;
+
             let path = Path::new(&path).strip_prefix(prefix)?.to_owned();
             let key = path.to_str().ok_or(NotAvailableError {})?;
             let mut file = File::new(key.to_string(), contents);
@@ -116,9 +116,12 @@ pub fn load_files_from_dir(dir: PathBuf, ending: &str, prefix: &PathBuf) -> Resu
 mod tests {
     use super::*;
     #[test]
-    fn test_load_files_from_dir() {
+    fn test_load_txt_files_from_dir() {
         let files =
-            load_files_from_dir(PathBuf::from("./documents"), ".pdf", &PathBuf::from(".")).unwrap();
+            load_txt_files_from_dir(PathBuf::from("./documents"), ".txt", &PathBuf::from("."))
+                .unwrap_or_else(|err| {
+                    panic!("Failed to load files: {:?}", err);
+                });
         //assert_eq!(files.len(), 1);
     }
 }

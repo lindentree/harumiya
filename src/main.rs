@@ -14,7 +14,13 @@ use axum::{
 use axum::{Json, Router};
 use create_world_controller::create_world_simple;
 use dotenv::dotenv;
-use qdrant_client::client::QdrantClient;
+use qdrant_client::{
+    prelude::{Payload, QdrantClient},
+    qdrant::{
+        vectors_config::Config, with_payload_selector::SelectorOptions, CreateCollection, Distance,
+        PointStruct, ScoredPoint, SearchPoints, VectorParams, VectorsConfig, WithPayloadSelector,
+    },
+};
 use serde_json::Map;
 use serde_json::Value;
 use std::env;
@@ -30,8 +36,11 @@ async fn main() {
 
     let qdrant_client = QdrantClient::from_url(&std::env::var("LOCAL_QDRANT").unwrap()).build();
     let mut vector_db = VectorDB::new(qdrant_client.expect("Failed to create Qdrant client"));
-    let files = contents::load_files_from_dir("./documents".into(), ".pdf", &".".into()).unwrap();
+    let files =
+        contents::load_txt_files_from_dir("./documents".into(), ".txt", &".".into()).unwrap();
     println!("Files: {:?}", files.len());
+
+    vector_db.reset_collection().await.unwrap();
 
     println!("Setup done");
 
@@ -72,6 +81,7 @@ async fn embed_documentation(
     for file in files {
         let embeddings = gemini::embed_file(file).await?;
         println!("Embedding: {:?}", file.path);
+        println!("CHECK: {:?}", embeddings.len());
         for embedding in embeddings {
             vector_db.upsert_embedding(embedding, file).await?;
         }

@@ -25,7 +25,7 @@ pub async fn generate_sentence_embeddings(
         "https://{api_endpoint}/v1/projects/{project_id}/locations/{location_id}/publishers/google/models/{EMBEDDING_MODEL_NAME}:predict"
     );
 
-    print!("EMBED {:?}", EMBEDDING_MODEL_NAME);
+    //print!("EMBED {:?}", EMBEDDING_MODEL_NAME);
     let authentication_manager = AuthenticationManager::new().await?;
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
     let token = authentication_manager.get_token(scopes).await?;
