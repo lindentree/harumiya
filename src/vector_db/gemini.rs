@@ -11,6 +11,7 @@ pub async fn embed_file(file: &File) -> Result<Vec<Vec<f32>>, Box<dyn std::error
         embeddings.push(embedding);
         //println!("Embedded: {}", sentence);
     }
+    println!("SUCCESS CHECK: {:?}", embeddings.len());
 
     Ok(embeddings)
 }

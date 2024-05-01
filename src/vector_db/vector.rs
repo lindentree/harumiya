@@ -64,7 +64,7 @@ impl VectorDB {
         println!("Embedded: {}", file.path);
 
         let points = vec![PointStruct::new(self.id, embedding, payload)];
-        println!("POINTS: {:?}", points);
+        //println!("POINTS: {:?}", points);
         self.client
             .upsert_points(COLLECTION, None, points, None)
             .await?;
@@ -73,25 +73,23 @@ impl VectorDB {
         Ok(())
     }
 
-    // pub async fn search(&self, embedding: Embedding) -> Result<ScoredPoint> {
-    //     let vec: Vec<f32> = embedding.vec.iter().map(|&x| x as f32).collect();
+    pub async fn search(&self, embedding: Vec<f32>) -> Result<ScoredPoint, EmbeddingError> {
+        let payload_selector = WithPayloadSelector {
+            selector_options: Some(SelectorOptions::Enable(true)),
+        };
 
-    //     let payload_selector = WithPayloadSelector {
-    //         selector_options: Some(SelectorOptions::Enable(true)),
-    //     };
+        let search_points = SearchPoints {
+            collection_name: COLLECTION.to_string(),
+            vector: embedding,
+            limit: 1,
+            with_payload: Some(payload_selector),
+            ..Default::default()
+        };
 
-    //     let search_points = SearchPoints {
-    //         collection_name: COLLECTION.to_string(),
-    //         vector: vec,
-    //         limit: 1,
-    //         with_payload: Some(payload_selector),
-    //         ..Default::default()
-    //     };
-
-    //     let search_result = self.client.search_points(&search_points).await?;
-    //     let result = search_result.result[0].clone();
-    //     Ok(result)
-    // }
+        let search_result = self.client.search_points(&search_points).await?;
+        let result = search_result.result[0].clone();
+        Ok(result)
+    }
 }
 
 #[cfg(test)]

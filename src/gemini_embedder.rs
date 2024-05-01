@@ -30,18 +30,11 @@ pub async fn generate_sentence_embeddings(
     let scopes = &["https://www.googleapis.com/auth/cloud-platform"];
     let token = authentication_manager.get_token(scopes).await?;
 
-    // let sample_text = r#"Things to Consider When Designing a Planet
-    // Distance from star: The distance a planet orbits its parent star determines how much solar heat and radiation it receives.
-    // For bright, hot stars, the habitable zone is farther away than for cool, dim stars.
-    // "#;
-
-    //let sample = "The distance a planet orbits its parent star determines how much solar heat";
-
     let payload = PredictEmbeddingsRequest {
         instances: vec![EmbeddingContent { content: sentence }],
     };
 
-    print!("{:?}", payload);
+    //print!("{:?}", payload);
 
     let resp = reqwest::Client::new()
         .post(&endpoint_url)
