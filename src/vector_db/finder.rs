@@ -5,7 +5,6 @@ pub trait Finder {
     fn find(&self, key: &str) -> Option<String>;
     fn get_contents(&self, result: &ScoredPoint) -> Option<String>;
 }
-
 impl Finder for Vec<File> {
     fn find(&self, key: &str) -> Option<String> {
         for file in self {

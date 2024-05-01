@@ -34,18 +34,18 @@ async fn main() {
     let path = env::current_dir().unwrap();
     println!("The current directory is {}", path.display());
 
-    let qdrant_client = QdrantClient::from_url(&std::env::var("LOCAL_QDRANT").unwrap()).build();
-    let mut vector_db = VectorDB::new(qdrant_client.expect("Failed to create Qdrant client"));
-    let files =
-        contents::load_txt_files_from_dir("./documents".into(), ".txt", &".".into()).unwrap();
-    println!("Files: {:?}", files.len());
+    // let qdrant_client = QdrantClient::from_url(&std::env::var("LOCAL_QDRANT").unwrap()).build();
+    // let mut vector_db = VectorDB::new(qdrant_client.expect("Failed to create Qdrant client"));
+    // let files =
+    //     contents::load_txt_files_from_dir("./documents".into(), ".txt", &".".into()).unwrap();
+    // println!("Files: {:?}", files.len());
 
-    vector_db.reset_collection().await.unwrap();
+    // vector_db.reset_collection().await.unwrap();
 
-    println!("Setup done");
+    // println!("Setup done");
 
-    embed_documentation(&mut vector_db, &files).await.unwrap();
-    println!("Embedding done");
+    // embed_documentation(&mut vector_db, &files).await.unwrap();
+    // println!("Embedding done");
 
     let router = Router::new()
         .route("/", get(hello_world))
