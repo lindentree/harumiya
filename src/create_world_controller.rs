@@ -54,7 +54,7 @@ pub async fn create_world_simple(
         but flesh out each category with a few concrete examples. Also add more categories as appropriate.
         User: {user_premise}"#
     );
-    println!("PROMPT {:?}", init_prompt);
+    //println!("PROMPT {:?}", init_prompt);
 
     let prompt_embedding = generate_sentence_embeddings(init_prompt).await?;
 
@@ -66,12 +66,12 @@ pub async fn create_world_simple(
     let result = files.get_contents(&context).ok_or(EmbeddingError)?;
 
     let final_prompt = format!(
-        r#"System: You are a worldbuilding assistant. Create a setting based on the user's premise. Focus more on
-        the world's details and less on the plot. 
+        r#"System: You are a worldbuilding assistant. Create a setting based on the user's premise as though you were working through a guide like the following: {result}. Focus more on
+        the world's details and less on the plot. Also come up a unique name for the world that does not copy the user premise.
         Format it as a JSON with this schema {{ "name": "multiline string", "setting": "multiline string", "wildlife: "multiline string", "geography": "multiline string", etc  }}. Do not nest data 
-        but flesh out each category with a few concrete examples. Also add more categories as appropriate.
+        but flesh out each category with a few concrete examples. Also add or remove categories as appropriate.
         User: {user_premise}
-        Context: {result}"#
+        "#
     );
 
     println!("FINAL PROMPT {:?}", final_prompt);

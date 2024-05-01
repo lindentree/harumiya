@@ -20,7 +20,13 @@ const action: ActionFunction = async ({ request }) => {
 
   //const valid = JSON.stringify(json);
   console.log("EXTERNAL", json);
-  return JSON.parse(json);
+  try {
+    return JSON.parse(json);
+  } catch (error) {
+    console.error("Error parsing JSON:", error);
+    return redirect(`/world?error=${encodeURIComponent("Failed to parse JSON")}`);
+  }
+
 
 }
 

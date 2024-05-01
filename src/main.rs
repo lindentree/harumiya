@@ -32,7 +32,6 @@ use vector_db::contents::File; // Add this import statement // Add this import s
 async fn main() {
     dotenv().ok();
     let path = env::current_dir().unwrap();
-    println!("The current directory is {}", path.display());
 
     // let qdrant_client = QdrantClient::from_url(&std::env::var("LOCAL_QDRANT").unwrap()).build();
     // let mut vector_db = VectorDB::new(qdrant_client.expect("Failed to create Qdrant client"));
