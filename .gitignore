@@ -6,3 +6,8 @@ node_modules
 /build
 .env
 .DS_Store
+
+/documents
+src/documents/
+
+Shuttle.toml
