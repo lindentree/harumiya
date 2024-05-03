@@ -52,23 +52,28 @@ export { action, loader };
 export default function WorldOverview() {
   const navigation = useNavigation();
 
-  const worldData = useActionData() as WorldData | undefined;
+  const worldData = useActionData() as WorldData;
 
-  if (!worldData) {
-    return <div>Loading...</div>;
-  }
   console.log("TESTING", worldData);
-  console.log("WORLD", Object.keys(worldData));
 
-  if (navigation.state === "loading") {
+  if (worldData === undefined) {
     return <div style={{
       backgroundImage: `url(${fantasy})`,
       backgroundSize: "cover",
       height: "100vh", // Set the height of the div to cover the entire page
       width: "100vw", // Set the width of the div to cover the entire page
       position: "relative", // Add position relative to the div
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
 
-    }}>Loading...</div>;
+    }}> <h1 style={{
+      textAlign: "center",
+      color: "green",
+      position: "relative", // Add position relative to the text
+      zIndex: 1, // Set a higher z-index to make the text appear above the overlay
+    }}>Loading...</h1>
+    </div>
   }
 
   return (
