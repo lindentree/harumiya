@@ -13,7 +13,7 @@ static EMBEDDING_MODEL_NAME: &str = "textembedding-gecko@003";
 static EMBEDDING_MODEL_NAME_2: &str = "embedding-001";
 
 pub async fn generate_sentence_embeddings(
-    sentence: String,
+    sentence: &String,
 ) -> Result<Vec<f32>, Box<dyn std::error::Error>> {
     dotenv().ok();
 
@@ -31,7 +31,9 @@ pub async fn generate_sentence_embeddings(
     let token = authentication_manager.get_token(scopes).await?;
 
     let payload = PredictEmbeddingsRequest {
-        instances: vec![EmbeddingContent { content: sentence }],
+        instances: vec![EmbeddingContent {
+            content: sentence.to_string(),
+        }],
     };
 
     //print!("{:?}", payload);
@@ -109,11 +111,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_generate_sentence_embeddings() {
-        let result = generate_sentence_embeddings(
+        let sentence =
             "The distance a planet orbits its parent star determines how much solar heat"
-                .to_string(),
-        )
-        .await;
+                .to_string();
+        let result = generate_sentence_embeddings(&sentence).await;
         print!("{:?}", result);
         assert!(result.is_ok());
     }
