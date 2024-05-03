@@ -14,12 +14,9 @@ interface WorldData {
 
 
 const action: ActionFunction = async ({ request }) => {
-  console.log("FIRING ACTION");
   const formData = await request.formData();
-  console.log("FORMDATA", [...formData]);
   let keys = Array.from(formData.keys()).length
 
-  console.log("ENTRY NUM", keys);
   for (let [key, val] of formData.entries()) {
     console.log(key, val);
   }
@@ -41,10 +38,8 @@ const action: ActionFunction = async ({ request }) => {
     keepalive: true
   });
 
-  //const external = await res.text();
   const json = await res.text();
 
-  console.log("EXTERNAL", json);
   try {
     return defer(JSON.parse(json));
   } catch (error) {
@@ -56,7 +51,6 @@ const action: ActionFunction = async ({ request }) => {
 }
 
 const loader: LoaderFunction = async ({ params }) => {
-  console.log("params", params);
   return params;
 }
 

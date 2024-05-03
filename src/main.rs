@@ -31,7 +31,6 @@ use vector_db::contents::File; // Add this import statement // Add this import s
 #[tokio::main(flavor = "multi_thread", worker_threads = 2)]
 async fn main() {
     dotenv().ok();
-    let path = env::current_dir().unwrap();
 
     // let qdrant_client = QdrantClient::from_url(&std::env::var("LOCAL_QDRANT").unwrap()).build();
     // let mut vector_db = VectorDB::new(qdrant_client.expect("Failed to create Qdrant client"));
@@ -91,21 +90,21 @@ async fn create_world_detailed_handler(payload: Json<Map<String, Value>>) -> imp
     }
 }
 
-async fn embed_documentation(
-    vector_db: &mut VectorDB,
-    files: &Vec<File>,
-) -> anyhow::Result<(), Box<dyn std::error::Error>> {
-    for file in files {
-        let embeddings = gemini::embed_file(file).await?;
-        println!("Embedding: {:?}", file.path);
-        println!("CHECK: {:?}", embeddings.len());
-        for embedding in embeddings {
-            vector_db.upsert_embedding(embedding, file).await?;
-        }
-    }
+// async fn embed_documentation(
+//     vector_db: &mut VectorDB,
+//     files: &Vec<File>,
+// ) -> anyhow::Result<(), Box<dyn std::error::Error>> {
+//     for file in files {
+//         let embeddings = gemini::embed_file(file).await?;
+//         println!("Embedding: {:?}", file.path);
+//         println!("CHECK: {:?}", embeddings.len());
+//         for embedding in embeddings {
+//             vector_db.upsert_embedding(embedding, file).await?;
+//         }
+//     }
 
-    Ok(())
-}
+//     Ok(())
+// }
 
 pub async fn hello_world() -> &'static str {
     "Hello, world change!"
