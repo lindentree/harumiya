@@ -127,10 +127,11 @@ pub async fn create_world_detailed(
 
     let final_prompt = format!(
         r#"System: You are a worldbuilding assistant based on the content from this document Context: {result}. Create a setting based on the user's premise. 
-        Focus more on the world's details and less on the plot. Also come up a unique name for the world that does not copy the user premise.
+        Focus more on the world's details and less on the plot. 
+        Customize the setting to the User's explicit needs and choices: {params} like mixing in themes appropriate to genre or intended use 
+        such as Dungeons and Dragons campaign.
+
         Format it as a JSON with this schema {{ "name": "multiline string", "setting": "multiline string", "wildlife: "multiline string", "geography": "multiline string", etc  }}. 
-        Do not nest data but flesh out each category with a few concrete and specfic examples. If you cannot come up with non general content, do not add that category.
-        User: {params} Keep in mind the user's explicit choices like genre or intended use, eg add a technology category and planetary details if scifi is specified.
         "#
     );
 
@@ -143,7 +144,7 @@ pub async fn create_world_detailed(
         }],
         generation_config: Some(GenerationConfig {
             max_output_tokens: Some(2048),
-            temperature: Some(0.4),
+            temperature: Some(0.1),
             top_p: Some(1.0),
             top_k: Some(32),
             //response_mime_type: Some("application/json".to_string()),
@@ -152,7 +153,7 @@ pub async fn create_world_detailed(
         tools: None,
     };
 
-    println!("PROMPT PAYLOAD{:?}", payload);
+    println!("DETAILED PAYLOAD{:?}", payload);
 
     let resp = reqwest::Client::new()
         .post(&endpoint_url)
@@ -173,7 +174,7 @@ pub async fn create_world_detailed(
         });
     });
 
-    println!("CONTROLLER {:?}", Json(&assembled));
+    println!("DETAILED {:?}", Json(&assembled));
 
     Ok(Json(assembled))
 }

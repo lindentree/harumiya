@@ -16,20 +16,34 @@ interface WorldData {
 const action: ActionFunction = async ({ request }) => {
   console.log("FIRING ACTION");
   const formData = await request.formData();
+  console.log("FORMDATA", [...formData]);
+  let keys = Array.from(formData.keys()).length
 
-  const res = await fetch('http://localhost:8080/create', {
+  console.log("ENTRY NUM", keys);
+  for (let [key, val] of formData.entries()) {
+    console.log(key, val);
+  }
+
+  const entries = Object.fromEntries(formData.entries());
+  let defaultRoute = 'http://localhost:8080/create'
+
+  if (keys > 1) {
+    defaultRoute = 'http://localhost:8080/create-detailed'
+  }
+
+
+  const res = await fetch(defaultRoute, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ premise: formData.get('premise') }),
+    body: JSON.stringify({ premise: entries }),
     keepalive: true
   });
 
   //const external = await res.text();
   const json = await res.text();
 
-  //const valid = JSON.stringify(json);
   console.log("EXTERNAL", json);
   try {
     return defer(JSON.parse(json));
@@ -63,9 +77,11 @@ export default function WorldOverview() {
       height: "100vh", // Set the height of the div to cover the entire page
       width: "100vw", // Set the width of the div to cover the entire page
       position: "relative", // Add position relative to the div
+      overflow: "hidden",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+      padding: 0
 
     }}> <h1 style={{
       textAlign: "center",

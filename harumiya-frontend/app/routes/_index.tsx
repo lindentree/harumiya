@@ -15,30 +15,13 @@ export const meta: MetaFunction = () => {
 export const action = async ({
   request
 }: ActionFunctionArgs) => {
-  // console.log("FIRING initial");
-
-  // const session = await getSession(
-  //   request.headers.get("Cookie")
-  // );
-  // const formData = await request.formData();
-  // const premise = formData.get("premise");
-
-  // session.flash(
-  //   "error",
-  //   `${premise}`
-  // );
-
-
   return redirect("/world")
-
 }
 
 export default function Index() {
   const navigation = useNavigation();
   const [isPending, startTransition] = useTransition();
   const navigate = useNavigate();
-
-
 
   if (navigation.state === "loading" || navigation.state !== "idle" || isPending) {
     return (
@@ -95,7 +78,12 @@ export default function Index() {
       }}> Harumiya is an idea generator for world building</p>
       <div>
         <Form method="post" action="/world">
-          <input name="premise" type="text" style={{ height: "80px", borderRadius: "10px", paddingLeft: "10px", position: "relative", zIndex: 1 }} placeholder="Enter premise here" />
+          <input name="premise" type="text" style={{
+            height: "200px", width: "600px", borderRadius: "10px", paddingLeft: "10px", wordBreak: 'break-word',
+            whiteSpace: 'normal',
+            zIndex: 1,
+            position: "relative"
+          }} placeholder="Enter premise here" />
           <br />
           <button type="submit" style={{ fontSize: "1.2em", position: "relative", zIndex: 1 }}>Demo</button>
         </Form>
@@ -106,8 +94,8 @@ export default function Index() {
         textAlign: "center",
         position: "relative", // Add position relative to the text
         zIndex: 1, // Set a higher z-index to make the text appear above the overlay
-      }}>If you have a more involved premise that can't be summed up in one or two sentences, please try our detailed creation form.</p>
-      <button type="button" onClick={() => navigate("/detail")} style={{ position: "relative", zIndex: 1 }}>Go to Detail Page</button>
+      }}>If you have a more involved premise that can't be summed up in one or two sentences, please try our detailed prompt form.</p>
+      <button type="button" onClick={() => navigate("/detail")} style={{ position: "relative", zIndex: 1 }}>Go to Detailed Prompt Form</button>
     </div >
   );
 }

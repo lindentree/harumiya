@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigation } from "@remix-run/react";
+import { useTransition } from "react";
+
+import fantasy from "/fantasy.webp";
 
 interface WorldDetails {
     premise: string;
@@ -18,14 +22,6 @@ const DetailedPrompt: React.FC = () => {
         // Initialize other properties here
     });
 
-    // const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //     const { name, value } = e.target;
-    //     setWorldDetails((prevDetails) => ({
-    //         ...prevDetails,
-    //         [name]: value,
-    //     }));
-    // };
-
     // Add more properties as needed
     const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -35,16 +31,41 @@ const DetailedPrompt: React.FC = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle form submission here
-        console.log(worldDetails);
-    };
+    const navigation = useNavigation();
+    const [isPending, startTransition] = useTransition();
+
+    if (navigation.state === "loading" || navigation.state !== "idle" || isPending) {
+        return (
+            <div style={{
+                backgroundImage: `url(${fantasy})`,
+                backgroundSize: "cover",
+                height: "100vh", // Set the height of the div to cover the entire page
+                width: "100vw", // Set the width of the div to cover the entire page
+                position: "relative", // Add position relative to the div
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}>
+                <h1 style={{
+                    color: "green",
+                    position: "relative", // Add position relative to the text
+                    zIndex: 1, // Set a higher z-index to make the text appear above the overlay
+                }}>Generating...</h1>
+            </div>
+        );
+    }
 
     return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <form onSubmit={handleSubmit}>
-                <input name="premise" type="text" style={{ height: "80px", borderRadius: "10px", paddingLeft: "10px" }} placeholder="Enter premise here" />
+            <form method="post" action="/world">
+                <input name="premise" type="text"
+                    autoComplete="off"
+                    style={{
+                        height: "200px",
+                        width: "600px",
+                        borderRadius: "10px", paddingLeft: "10px", wordBreak: 'break-word',
+                        whiteSpace: 'normal',
+                    }} placeholder="Enter premise here" />
                 <label style={{ display: "block", fontSize: "1.2rem", color: "green" }}>
                     Genre:
                     <select

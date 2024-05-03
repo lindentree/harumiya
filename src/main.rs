@@ -48,7 +48,8 @@ async fn main() {
 
     let router = Router::new()
         .route("/", get(hello_world))
-        .route("/create", post(create_world_simple_handler));
+        .route("/create", post(create_world_simple_handler))
+        .route("/create-detailed", post(create_world_detailed_handler));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     let tcp = TcpListener::bind(&addr).await.unwrap();
@@ -60,6 +61,23 @@ async fn create_world_simple_handler(payload: Json<Map<String, Value>>) -> impl 
     let premise: String = payload.0.get("premise").unwrap().to_string();
     let result = create_world_simple(premise).await;
     println!("outer: {:?}", result);
+
+    match result {
+        Ok(_result) => Response::builder()
+            .status(StatusCode::CREATED)
+            .body(Body::from(_result.to_string()))
+            .unwrap(),
+        Err(_) => Response::builder()
+            .status(StatusCode::INTERNAL_SERVER_ERROR)
+            .body(Body::from("Error"))
+            .unwrap(),
+    }
+}
+
+async fn create_world_detailed_handler(payload: Json<Map<String, Value>>) -> impl IntoResponse {
+    let premise: String = payload.0.get("premise").unwrap().to_string();
+    let result = create_world_controller::create_world_detailed(Json(premise)).await;
+    println!("DETAIL outer: {:?}", result);
 
     match result {
         Ok(_result) => Response::builder()
